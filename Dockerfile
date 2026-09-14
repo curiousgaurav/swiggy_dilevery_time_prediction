@@ -2,7 +2,16 @@
 FROM python:3.12-slim
 
 # install lightgbm dependency
-RUN apt-get update && apt-get install -y libgomp1
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV OMP_NUM_THREADS=1 \
+    OPENBLAS_NUM_THREADS=1 \
+    MKL_NUM_THREADS=1 \
+    NUMEXPR_NUM_THREADS=1 \
+    LIGHTGBM_NUM_THREADS=1 \
+    PIP_NO_CACHE_DIR=1
 
 # set up the working directory
 WORKDIR /app
@@ -11,7 +20,7 @@ WORKDIR /app
 COPY requirements-dockers.txt ./
 
 # install the packages
-RUN pip install -r requirements-dockers.txt
+RUN pip install --no-cache-dir --disable-pip-version-check -r requirements-dockers.txt
 
 # copy the app contents
 COPY app.py ./
