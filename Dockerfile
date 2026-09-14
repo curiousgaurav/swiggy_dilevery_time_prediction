@@ -15,9 +15,10 @@ RUN pip install -r requirements-dockers.txt
 
 # copy the app contents
 COPY app.py ./
+COPY ./frontend ./frontend
+COPY ./models/model.joblib ./models/model.joblib
 COPY ./models/preprocessor.joblib ./models/preprocessor.joblib
 COPY ./scripts/data_clean_utils.py ./scripts/data_clean_utils.py
-COPY ./run_information.json ./
 
 # expose the port
 EXPOSE 8000

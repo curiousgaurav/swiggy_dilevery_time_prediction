@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Delivery Time Predictor</title>
+  <style>
+    :root {
+      --ink: #17211b;
+      --muted: #66736a;
+      --paper: #f5f3ed;
+      --panel: #fffdf8;
+      --line: #d7ddd4;
+      --green: #1d6b4f;
+      --green-dark: #124735;
+      --orange: #e9783f;
+      --shadow: 0 22px 60px rgba(30, 58, 43, .12);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Georgia, "Times New Roman", serif;
+    }
+    .shell { min-height: 100vh; padding: 28px; }
+    .frame {
+      max-width: 1180px;
+      margin: 0 auto;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 42px 48px 38px;
+      color: #f7f6ed;
+      background: var(--green-dark);
+    }
+    .eyebrow {
+      margin: 0 0 12px;
+      color: #f2b36e;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    h1 { max-width: 650px; margin: 0; font-size: clamp(34px, 5vw, 64px); line-height: .98; font-weight: 500; }
+    .lede { max-width: 540px; margin: 18px 0 0; color: #d7e2d8; font-size: 18px; line-height: 1.5; }
+    .status {
+      align-self: flex-start;
+      min-width: 150px;
+      padding: 12px 14px;
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 10px;
+      color: #e1efe2;
+      font: 700 12px Arial, sans-serif;
+      letter-spacing: 1px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    main { display: grid; grid-template-columns: 1.5fr .85fr; gap: 0; }
+    .form-area { padding: 38px 48px 48px; }
+    .side { padding: 38px; background: #edf0e8; border-left: 1px solid var(--line); }
+    .section-title { margin: 0 0 6px; font-size: 25px; font-weight: 500; }
+    .section-note { margin: 0 0 25px; color: var(--muted); font: 14px/1.5 Arial, sans-serif; }
+    form { display: grid; gap: 24px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    label { display: grid; gap: 7px; color: var(--muted); font: 700 11px Arial, sans-serif; letter-spacing: .7px; text-transform: uppercase; }
+    input, select {
+      width: 100%; min-height: 44px; padding: 10px 11px;
+      border: 1px solid var(--line); border-radius: 7px; outline: none;
+      color: var(--ink); background: #fff; font: 15px Arial, sans-serif;
+    }
+    input:focus, select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(29,107,79,.12); }
+    .actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    button { min-height: 46px; padding: 0 20px; border: 0; border-radius: 7px; cursor: pointer; font: 700 13px Arial, sans-serif; letter-spacing: .4px; }
+    .primary { color: white; background: var(--orange); }
+    .primary:hover { background: #cf6030; }
+    .secondary { color: var(--green-dark); background: #dce8dc; }
+    .secondary:hover { background: #cbdcca; }
+    button:disabled { cursor: wait; opacity: .6; }
+    .message { min-height: 20px; color: #a34226; font: 13px Arial, sans-serif; }
+    .result {
+      margin-top: 28px; padding: 25px; border-radius: 12px; background: var(--green-dark); color: white;
+    }
+    .result small { color: #b8d3bf; font: 700 11px Arial, sans-serif; letter-spacing: 1.5px; text-transform: uppercase; }
+    .result strong { display: block; margin-top: 8px; font-size: 48px; font-weight: 500; }
+    .result span { color: #d7e2d8; font: 14px Arial, sans-serif; }
+    .side h2 { margin: 0 0 16px; font-size: 29px; font-weight: 500; }
+    .side p { color: var(--muted); font: 15px/1.6 Arial, sans-serif; }
+    .signal { display: grid; gap: 12px; margin-top: 28px; }
+    .signal div { padding: 14px; border-top: 1px solid #cbd5c9; color: var(--green-dark); font: 700 12px Arial, sans-serif; letter-spacing: .5px; text-transform: uppercase; }
+    @media (max-width: 850px) {
+      .shell { padding: 10px; }
+      header { display: block; padding: 30px 24px; }
+      .status { margin-top: 24px; }
+      main { display: block; }
+      .form-area { padding: 30px 24px; }
+      .side { border-top: 1px solid var(--line); border-left: 0; padding: 30px 24px; }
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="frame">
+      <header>
+        <div>
+          <p class="eyebrow">Swiggy delivery intelligence</p>
+          <h1>Predict the arrival before the order leaves.</h1>
+          <p class="lede">Enter delivery conditions below and get an estimated time in minutes from the trained local model.</p>
+        </div>
+        <div class="status">Model online</div>
+      </header>
+      <main>
+        <section class="form-area">
+          <h2 class="section-title">Delivery details</h2>
+          <p class="section-note">Use the sample button to test the hosted service immediately, or enter your own order data.</p>
+          <form id="prediction-form">
+            <div class="grid">
+              <label>Order ID<input name="ID" required></label>
+              <label>Delivery person ID<input name="Delivery_person_ID" required></label>
+              <label>Age<input name="Delivery_person_Age" type="number" required></label>
+              <label>Rating<input name="Delivery_person_Ratings" type="number" step="0.1" required></label>
+              <label>Restaurant latitude<input name="Restaurant_latitude" type="number" step="any" required></label>
+              <label>Restaurant longitude<input name="Restaurant_longitude" type="number" step="any" required></label>
+              <label>Drop latitude<input name="Delivery_location_latitude" type="number" step="any" required></label>
+              <label>Drop longitude<input name="Delivery_location_longitude" type="number" step="any" required></label>
+              <label>Order date<input name="Order_Date" placeholder="19-03-2022" required></label>
+              <label>Ordered at<input name="Time_Orderd" placeholder="11:30:00" required></label>
+              <label>Picked at<input name="Time_Order_picked" placeholder="11:45:00" required></label>
+              <label>Weather<input name="Weatherconditions" placeholder="conditions Sunny" required></label>
+              <label>Traffic<input name="Road_traffic_density" placeholder="High" required></label>
+              <label>Vehicle condition<input name="Vehicle_condition" type="number" min="0" max="5" required></label>
+              <label>Order type<input name="Type_of_order" placeholder="Snack" required></label>
+              <label>Vehicle<input name="Type_of_vehicle" placeholder="motorcycle" required></label>
+              <label>Multiple deliveries<input name="multiple_deliveries" placeholder="0" required></label>
+              <label>Festival<input name="Festival" placeholder="No" required></label>
+              <label>City<input name="City" placeholder="Urban" required></label>
+            </div>
+            <div class="actions">
+              <button class="primary" type="submit" id="predict-button">Predict delivery time</button>
+              <button class="secondary" type="button" id="sample-button">Load sample order</button>
+            </div>
+            <div class="message" id="message" role="alert"></div>
+          </form>
+          <div class="result" id="result" hidden>
+            <small>Estimated delivery time</small>
+            <strong id="minutes">--</strong>
+            <span>minutes from order placement</span>
+          </div>
+        </section>
+        <aside class="side">
+          <h2>A calmer way to estimate.</h2>
+          <p>The model combines route distance, pickup timing, traffic, weather, vehicle conditions, and order context into one practical estimate.</p>
+          <div class="signal">
+            <div>Local trained model</div>
+            <div>FastAPI prediction service</div>
+            <div>Ready for Render hosting</div>
+          </div>
+        </aside>
+      </main>
+    </div>
+  </div>
+  <script>
+    const sample = {
+      ID: "0x4607", Delivery_person_ID: "INDORES13DEL02", Delivery_person_Age: "37", Delivery_person_Ratings: "4.9",
+      Restaurant_latitude: 22.745049, Restaurant_longitude: 75.892471, Delivery_location_latitude: 22.765049,
+      Delivery_location_longitude: 75.912471, Order_Date: "19-03-2022", Time_Orderd: "11:30:00", Time_Order_picked: "11:45:00",
+      Weatherconditions: "conditions Sunny", Road_traffic_density: "High", Vehicle_condition: 2, Type_of_order: "Snack",
+      Type_of_vehicle: "motorcycle", multiple_deliveries: "0", Festival: "No", City: "Urban"
+    };
+    const form = document.querySelector('#prediction-form');
+    const result = document.querySelector('#result');
+    const minutes = document.querySelector('#minutes');
+    const message = document.querySelector('#message');
+    const button = document.querySelector('#predict-button');
+    const fill = (values) => Object.entries(values).forEach(([key, value]) => { const input = form.elements[key]; if (input) input.value = value; });
+    document.querySelector('#sample-button').addEventListener('click', () => { fill(sample); message.textContent = ''; result.hidden = true; });
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault(); message.textContent = ''; result.hidden = true; button.disabled = true; button.textContent = 'Calculating...';
+      const payload = Object.fromEntries(new FormData(form).entries());
+      ['Restaurant_latitude','Restaurant_longitude','Delivery_location_latitude','Delivery_location_longitude'].forEach((key) => payload[key] = Number(payload[key]));
+      payload.Vehicle_condition = Number(payload.Vehicle_condition);
+      try {
+        const response = await fetch('/predict', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || 'Prediction failed');
+        minutes.textContent = Number(data).toFixed(1);
+        result.hidden = false;
+      } catch (error) { message.textContent = error.message; }
+      finally { button.disabled = false; button.textContent = 'Predict delivery time'; }
+    });
+    fill(sample);
+  </script>
+</body>
+</html>

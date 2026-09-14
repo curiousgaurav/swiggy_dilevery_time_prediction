@@ -1,8 +1,6 @@
 fastapi[standard]
-scikit-learn == 1.5.2
+scikit-learn
 pandas
 numpy
-mlflow
 joblib
-dagshub
 lightgbm

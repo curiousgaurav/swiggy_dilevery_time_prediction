@@ -186,7 +186,7 @@ latex_documents = [
     ('index',
      'swiggy-delivery-time-prediction.tex',
      u'Swiggy-Delivery-Time-Prediction Documentation',
-     u"Campus X", 'manual'),
+    u"gaurav jhalani", 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -216,7 +216,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'swiggy-delivery-time-prediction', u'Swiggy-Delivery-Time-Prediction Documentation',
-     [u"Campus X"], 1)
+    [u"gaurav jhalani"], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -230,7 +230,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     ('index', 'swiggy-delivery-time-prediction', u'Swiggy-Delivery-Time-Prediction Documentation',
-     u"Campus X", 'Swiggy-Delivery-Time-Prediction',
+    u"gaurav jhalani", 'Swiggy-Delivery-Time-Prediction',
      'Build Ml project that predicts food delivery time in minutes', 'Miscellaneous'),
 ]
 
