@@ -3,5 +3,7 @@ services:
     name: swiggy-delivery-time-prediction
     runtime: docker
     plan: free
+    region: oregon
     healthCheckPath: /
     autoDeploy: true
+    dockerfilePath: ./Dockerfile

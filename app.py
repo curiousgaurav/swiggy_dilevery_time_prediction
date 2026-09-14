@@ -1,7 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-from sklearn.pipeline import Pipeline
 import uvicorn
 import pandas as pd
 import joblib
@@ -36,40 +35,10 @@ class Data(BaseModel):
 
     
     
-def load_transformer(transformer_path):
-    transformer = joblib.load(transformer_path)
-    return transformer
-
-
-
-# columns to preprocess in data
-num_cols = ["age",
-            "ratings",
-            "pickup_time_minutes",
-            "distance"]
-
-nominal_cat_cols = ['weather',
-                    'type_of_order',
-                    'type_of_vehicle',
-                    "festival",
-                    "city_type",
-                    "is_weekend",
-                    "order_time_of_day"]
-
-ordinal_cat_cols = ["traffic","distance_type"]
-
-# load the locally trained model and preprocessor
+# load the locally trained model pipeline
 root_path = Path(__file__).parent
 model_path = root_path / "models" / "model.joblib"
-preprocessor_path = root_path / "models" / "preprocessor.joblib"
-model = joblib.load(model_path)
-preprocessor = load_transformer(preprocessor_path)
-
-# build the model pipeline
-model_pipe = Pipeline(steps=[
-    ('preprocess',preprocessor),
-    ("regressor",model)
-])
+model_pipe = joblib.load(model_path)
 
 # create the app
 app = FastAPI()
