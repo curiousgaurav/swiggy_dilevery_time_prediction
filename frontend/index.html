@@ -123,11 +123,9 @@
       <main>
         <section class="form-area">
           <h2 class="section-title">Delivery details</h2>
-          <p class="section-note">Use the sample button to test the hosted service immediately, or enter your own order data.</p>
+          <p class="section-note">Only the essential prediction inputs are shown here; the remaining backend values are filled automatically.</p>
           <form id="prediction-form">
             <div class="grid">
-              <label>Order ID<input name="ID" required></label>
-              <label>Delivery person ID<input name="Delivery_person_ID" required></label>
               <label>Age<input name="Delivery_person_Age" type="number" required></label>
               <label>Rating<input name="Delivery_person_Ratings" type="number" step="0.1" required></label>
               <label>Restaurant latitude<input name="Restaurant_latitude" type="number" step="any" required></label>
@@ -172,11 +170,32 @@
   </div>
   <script>
     const sample = {
-      ID: "0x4607", Delivery_person_ID: "INDORES13DEL02", Delivery_person_Age: "37", Delivery_person_Ratings: "4.9",
+      Delivery_person_Age: "37", Delivery_person_Ratings: "4.9",
       Restaurant_latitude: 22.745049, Restaurant_longitude: 75.892471, Delivery_location_latitude: 22.765049,
       Delivery_location_longitude: 75.912471, Order_Date: "19-03-2022", Time_Orderd: "11:30:00", Time_Order_picked: "11:45:00",
       Weatherconditions: "conditions Sunny", Road_traffic_density: "High", Vehicle_condition: 2, Type_of_order: "Snack",
       Type_of_vehicle: "motorcycle", multiple_deliveries: "0", Festival: "No", City: "Urban"
+    };
+    const backendDefaults = {
+      ID: "AUTO_ID",
+      Delivery_person_ID: "AUTO_RIDER",
+      Delivery_person_Age: "37",
+      Delivery_person_Ratings: "4.9",
+      Restaurant_latitude: 22.745049,
+      Restaurant_longitude: 75.892471,
+      Delivery_location_latitude: 22.765049,
+      Delivery_location_longitude: 75.912471,
+      Order_Date: "19-03-2022",
+      Time_Orderd: "11:30:00",
+      Time_Order_picked: "11:45:00",
+      Weatherconditions: "conditions Sunny",
+      Road_traffic_density: "High",
+      Vehicle_condition: 2,
+      Type_of_order: "Snack",
+      Type_of_vehicle: "motorcycle",
+      multiple_deliveries: "0",
+      Festival: "No",
+      City: "Urban"
     };
     const form = document.querySelector('#prediction-form');
     const result = document.querySelector('#result');
@@ -187,7 +206,7 @@
     document.querySelector('#sample-button').addEventListener('click', () => { fill(sample); message.textContent = ''; result.hidden = true; });
     form.addEventListener('submit', async (event) => {
       event.preventDefault(); message.textContent = ''; result.hidden = true; button.disabled = true; button.textContent = 'Calculating...';
-      const payload = Object.fromEntries(new FormData(form).entries());
+      const payload = { ...backendDefaults, ...Object.fromEntries(new FormData(form).entries()) };
       ['Restaurant_latitude','Restaurant_longitude','Delivery_location_latitude','Delivery_location_longitude'].forEach((key) => payload[key] = Number(payload[key]));
       payload.Vehicle_condition = Number(payload.Vehicle_condition);
       try {
